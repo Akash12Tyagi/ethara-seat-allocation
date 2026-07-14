@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.database import Base, engine
-from app.routers import admin, ai, dashboard, employees, projects, seats
+from app.routers import ai, dashboard, employees, projects, seats
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger("ethara")
@@ -50,7 +50,6 @@ app.include_router(projects.router)
 app.include_router(seats.router)
 app.include_router(dashboard.router)
 app.include_router(ai.router)
-app.include_router(admin.router)
 
 
 @app.get("/")

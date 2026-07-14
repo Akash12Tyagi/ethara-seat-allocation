@@ -13,10 +13,6 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-opus-4-8"
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     environment: str = "development"
-    # Temporary, optional: enables POST /admin/seed for one-time remote seeding
-    # on managed platforms where a shell/job primitive isn't available on the
-    # free tier. Unset in production once seeding is done - see docs/DEPLOYMENT.md.
-    admin_seed_token: str | None = None
 
     @field_validator("database_url")
     @classmethod
