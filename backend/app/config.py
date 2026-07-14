@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -12,6 +13,19 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-opus-4-8"
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     environment: str = "development"
+
+    @field_validator("database_url")
+    @classmethod
+    def _normalize_postgres_scheme(cls, v: str) -> str:
+        # Managed Postgres providers (Railway, Heroku, etc.) hand out bare
+        # postgres(ql):// URLs, but SQLAlchemy needs the psycopg3 dialect
+        # prefix to pick the right driver - rewrite rather than requiring
+        # every deploy target to hand-edit the DSN scheme.
+        if v.startswith("postgres://"):
+            return "postgresql+psycopg://" + v[len("postgres://") :]
+        if v.startswith("postgresql://"):
+            return "postgresql+psycopg://" + v[len("postgresql://") :]
+        return v
 
     @property
     def cors_origin_list(self) -> list[str]:
