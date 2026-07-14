@@ -4,6 +4,17 @@ A full-stack app that manages seat allocation and project mapping for ~5,000 emp
 
 Built for the *Vibe Coding Assessment: Ethara Seat Allocation & Project Mapping System*. See [REQUIREMENTS.md](REQUIREMENTS.md) for the full requirement/gap analysis and [AI_PROMPTS.md](AI_PROMPTS.md) for the AI-usage log this assessment requires.
 
+## Live deployment
+
+| | |
+|---|---|
+| Frontend | https://ethara-seat-allocation-gilt.vercel.app |
+| Backend API | https://ethara-backend-ngmp.onrender.com |
+| API docs (Swagger) | https://ethara-backend-ngmp.onrender.com/docs |
+| GitHub repo | https://github.com/Akash12Tyagi/ethara-seat-allocation |
+
+Backend runs on Render's free tier (Docker web service + free Postgres) — the free Postgres instance expires 30 days after creation; the free web service spins down after 15 minutes of inactivity and takes ~30-60s to wake up on the first request after idling. Seeded with the full 5,000-employee / 5,600-seat demo dataset described below. No `ANTHROPIC_API_KEY` is set on the live deployment, so the AI Assistant runs in rule-based fallback mode (fully functional, per the PDF's explicit fallback requirement).
+
 ## Stack
 
 | Layer | Choice |

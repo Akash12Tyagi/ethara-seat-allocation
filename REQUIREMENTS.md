@@ -81,8 +81,8 @@ Docker Compose (Postgres + backend + frontend) provided for one-command local/pr
 
 | Item | Location |
 |---|---|
-| GitHub repo | local git repo initialized here; user pushes to GitHub |
-| Live deployment link | pending user deployment (see above gap) |
+| GitHub repo | https://github.com/Akash12Tyagi/ethara-seat-allocation |
+| Live deployment link | Frontend: https://ethara-seat-allocation-gilt.vercel.app · Backend: https://ethara-backend-ngmp.onrender.com |
 | README.md | `/README.md` |
 | AI_PROMPTS.md | `/AI_PROMPTS.md` |
 | Database schema | `docs/DATABASE.md` + `backend/app/models.py` + Alembic migration |
@@ -106,7 +106,7 @@ Docker Compose (Postgres + backend + frontend) provided for one-command local/pr
 
 ## Known Gaps (explicit, not silently skipped)
 1. **Authentication** — PDF doesn't mandate a specific auth scheme ("sample login credentials if authentication is added"). Given the assessment's focus is data/allocation logic, a lightweight role header (`X-Role: admin|hr|employee`) is implemented instead of full OAuth, to keep scope bounded. Documented in README as a deliberate simplification.
-2. **Live deployment** — requires the developer's own Railway/Vercel/etc. accounts; cannot be completed by the assistant. Everything up to `docker compose up` (verified against a real Postgres container) is done — see `docs/DEPLOYMENT.md`.
+2. ~~Live deployment~~ — **closed.** Deployed to Render (backend + Postgres, free tier) and Vercel (frontend); see the "Live deployment" section in README.md. Render's free Postgres expires 30 days after creation and the free web service spins down after 15 minutes idle (cold-start delay on first request after idling) — acceptable for an assessment demo, not for real production use.
 
 ## 11. Final Self-Review (Phase 14)
 
@@ -134,7 +134,7 @@ Verified against the PDF section-by-section. ✅ = implemented and verified (aut
 | Business rules B1-B8 (§8) | ✅ | DB constraints + service layer | every rule has a dedicated pytest test |
 | AI_PROMPTS.md (§9) | ✅ | `/AI_PROMPTS.md` | — |
 | Deployment-ready (§11) | ✅ | Dockerfiles + compose, verified against real Postgres | `docker compose up` end-to-end run |
-| Live deployment link (§11) | ⚠ | not created — requires the developer's own cloud accounts | documented in Known Gaps above |
-| Submission checklist items (§12) | ✅ | all present except the live link | see §9 table above |
+| Live deployment link (§11) | ✅ | Render (backend + Postgres) + Vercel (frontend) | Playwright screenshot of the live production dashboard, zero console/CORS errors, live data confirmed |
+| Submission checklist items (§12) | ✅ | all present | see §9 table above |
 
-**Bottom line:** every functional and business-rule requirement in the PDF is implemented and independently verified (automated test, manual API call, or browser screenshot — not just "written and assumed correct"). The only unmet item is a live public URL, which requires credentials only the developer holds.
+**Bottom line:** every functional and business-rule requirement in the PDF is implemented and independently verified (automated test, manual API call, or browser screenshot — not just "written and assumed correct"), including the live deployment itself.
