@@ -87,3 +87,23 @@ Bugs found and fixed during development, in the order encountered. Each was caug
 ## 11. Docker build transient failure (infra, not code)
 
 One `docker compose build` run failed with `ResourceExhausted: cannot allocate memory` during `apt-get install` inside the backend image — a Docker Desktop VM memory-limit issue, not a Dockerfile problem. Resolved by retrying the build after the memory pressure cleared; confirmed by rebuilding both images successfully and running the full stack end-to-end against real Postgres.
+
+## 12. Render free-tier Postgres: external connections fail at the TLS layer
+
+**Symptom:** `sqlalchemy.exc.OperationalError: ... SSL connection has been closed unexpectedly` when connecting to Render's Postgres via its **external** connection string — both from inside a Render-hosted container and from an unrelated machine on the public internet. Raw TCP to port 5432 succeeded (`nc -zv` connected); only the TLS handshake failed, so it wasn't a firewall block.
+
+**Root cause:** unconfirmed (Render-side proxy behavior on the free tier) — not something fixable from the client side; explicit `sslmode=require` didn't help either.
+
+**Workaround:** use the **internal** connection string instead — reachable only from services in the same Render account/region, which is exactly what a same-account web service + Postgres pair needs anyway. This is what the deployed backend uses (`DATABASE_URL` set to the internal DSN).
+
+**Follow-on constraint:** because external Postgres access didn't work, remote one-time seeding couldn't use a local `python seed.py` run pointed at the external DSN. Render's free tier also blocks both one-off Jobs and `pre-deploy-command` ("Commands can only run on paid instance types"), and `render ssh` requires either an interactive TTY (unavailable in this session) or a registered local SSH key (not set up). Worked around by adding a temporary token-protected `POST /admin/seed` endpoint that reuses the already-running app's internal DB connection, calling it once over HTTPS, then removing the endpoint — see the git history for the two bracketing commits.
+
+## 13. Live Anthropic key returns 400, not 401
+
+**Symptom:** After wiring a real `ANTHROPIC_API_KEY` into the deployed backend, `POST /ai/query` still returned the deterministic (non-Claude) answer. Logs showed `POST https://api.anthropic.com/v1/messages "HTTP/1.1 400 Bad Request"` rather than a `401` — easy to misread as an invalid/malformed key.
+
+**Root cause:** the key itself was valid; the linked Anthropic account had no credit balance. Anthropic returns `400 invalid_request_error` with the message *"Your credit balance is too low to access the Anthropic API"* for this case, not a `401` or `403`.
+
+**How found:** reproduced the exact call locally with the same key (via `Anthropic().messages.create(...)`) and printed the exception message — Claude's own client-side exception surfaces the API's JSON error body verbatim, which named the real cause immediately.
+
+**Not fixed in code** — this requires adding billing/credits in the Anthropic Console. The app's fallback path already handles it correctly: `answer_with_llm_or_fallback()` catches the exception and returns the rule-based answer instead of erroring, so the endpoint stayed fully functional (`200 OK`) throughout.

@@ -82,7 +82,7 @@ Docker Compose (Postgres + backend + frontend) provided for one-command local/pr
 | Item | Location |
 |---|---|
 | GitHub repo | https://github.com/Akash12Tyagi/ethara-seat-allocation |
-| Live deployment link | Frontend: https://ethara-seat-allocation-gilt.vercel.app · Backend: https://ethara-backend-ngmp.onrender.com |
+| Live deployment link | Frontend: https://ethara-seat-allocation-gilt.vercel.app · Backend: https://ethara-backend-2hdp.onrender.com |
 | README.md | `/README.md` |
 | AI_PROMPTS.md | `/AI_PROMPTS.md` |
 | Database schema | `docs/DATABASE.md` + `backend/app/models.py` + Alembic migration |

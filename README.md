@@ -9,11 +9,13 @@ Built for the *Vibe Coding Assessment: Ethara Seat Allocation & Project Mapping 
 | | |
 |---|---|
 | Frontend | https://ethara-seat-allocation-gilt.vercel.app |
-| Backend API | https://ethara-backend-ngmp.onrender.com |
-| API docs (Swagger) | https://ethara-backend-ngmp.onrender.com/docs |
+| Backend API | https://ethara-backend-2hdp.onrender.com |
+| API docs (Swagger) | https://ethara-backend-2hdp.onrender.com/docs |
 | GitHub repo | https://github.com/Akash12Tyagi/ethara-seat-allocation |
 
-Backend runs on Render's free tier (Docker web service + free Postgres) — the free Postgres instance expires 30 days after creation; the free web service spins down after 15 minutes of inactivity and takes ~30-60s to wake up on the first request after idling. Seeded with the full 5,000-employee / 5,600-seat demo dataset described below. No `ANTHROPIC_API_KEY` is set on the live deployment, so the AI Assistant runs in rule-based fallback mode (fully functional, per the PDF's explicit fallback requirement).
+Backend runs on Render's free tier (Docker web service + free Postgres) — the free Postgres instance expires 30 days after creation; the free web service spins down after 15 minutes of inactivity and takes ~30-60s to wake up on the first request after idling. Seeded with the full 5,000-employee / 5,600-seat demo dataset described below.
+
+`ANTHROPIC_API_KEY` is set on the live deployment, but the linked Anthropic account currently has no credit balance, so `POST /v1/messages` returns `400 invalid_request_error` ("Your credit balance is too low"). The app catches this and falls back to the deterministic rule-based intent parser exactly as designed (see `docs/DEBUGGING.md`) — the AI Assistant is fully functional either way, per the PDF's explicit fallback requirement. Once credits are added at [console.anthropic.com](https://console.anthropic.com) → Plans & Billing, Claude-phrased responses will start working immediately with no redeploy needed.
 
 ## Stack
 
